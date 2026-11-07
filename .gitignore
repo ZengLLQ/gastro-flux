@@ -1,0 +1,9 @@
+*.jl.*.cov
+*.jl.cov
+*.mem
+*.log
+.DS_Store
+Thumbs.db
+Manifest.toml
+.vscode/
+.idea/

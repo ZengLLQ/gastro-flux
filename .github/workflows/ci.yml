@@ -1,0 +1,39 @@
+name: main CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        version: ['1.10', '1']
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Julia ${{ matrix.version }}
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ matrix.version }}
+
+      - name: Build Package
+        uses: julia-actions/julia-buildpkg@v1
+
+      - name: Run Test Suite
+        uses: julia-actions/julia-runtest@v1
+
+      - name: Run Example Simulations
+        shell: bash
+        run: |
+          julia --project=. examples/bcs_class_benchmark.jl
+          julia --project=. examples/fed_vs_fasted.jl
+          julia --project=. examples/formulation_optimization.jl
